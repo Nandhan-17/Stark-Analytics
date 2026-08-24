@@ -109,167 +109,168 @@ export const DynamicChartsTab: React.FC<DynamicChartsTabProps> = ({ data }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="space-y-6"
-    >
-      {/* 1. Feature Importance & Correlation Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Feature Importance Card */}
-        <div className="glass-card p-6">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="p-2.5 rounded-xl bg-[#1A73E8]/10 text-[#1A73E8]">
-              <Cpu className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-[#202124]">Business Drivers & Feature Importance</h3>
-              <p className="text-xs text-gray-500">Random Forest importance ranking against target column</p>
-            </div>
-          </div>
-
-          {hasFeatureImportance ? (
-            <PlotlyChart data={featureImportancePlotData} layout={featureImportanceLayout} className="w-full h-76" />
-          ) : (
-            <EmptyState title="Feature Importance Unavailable" message={featResult.message} />
-          )}
-        </div>
-
-        {/* Correlation Heatmap Card */}
-        <div className="glass-card p-6">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="p-2.5 rounded-xl bg-[#34A853]/10 text-[#34A853]">
-              <Grid className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-[#202124]">Correlation Matrix Heatmap</h3>
-              <p className="text-xs text-gray-500">Inter-variable Pearson correlation coefficients</p>
-            </div>
-          </div>
-
-          {hasCorrelation ? (
-            <PlotlyChart data={corrHeatmapPlotData} layout={corrHeatmapLayout} className="w-full h-76" />
-          ) : (
-            <EmptyState title="Correlation Heatmap Unavailable" message="At least 2 numeric columns are required to generate a correlation heatmap." />
-          )}
-        </div>
-      </div>
-
-      {/* 2. Time-Series Evaluation Line Chart */}
-      <div className="glass-card p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-[#FBBC04]/15 text-[#b38300]">
-              <TrendingUp className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-[#202124]">Time-Series & Moving Average Trends</h3>
-              <p className="text-xs text-gray-500">Temporal evaluation across Datetime columns</p>
-            </div>
-          </div>
-
-          {hasTimeSeries && (
-            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-              tsResult.trend === "Upward"
-                ? "bg-[#34A853]/15 text-[#34A853]"
-                : tsResult.trend === "Downward"
-                ? "bg-[#EA4335]/15 text-[#EA4335]"
-                : "bg-gray-100 text-gray-700"
-            }`}>
-              {tsResult.trend} Trend ({tsResult.pct_change > 0 ? `+${tsResult.pct_change}%` : `${tsResult.pct_change}%`})
-            </span>
-          )}
-        </div>
-
-        {hasTimeSeries ? (
-          <PlotlyChart data={timeSeriesPlotData} layout={timeSeriesLayout} className="w-full h-80" />
-        ) : (
-          <EmptyState title="Time-Series Analysis Unavailable" message={tsResult.message} />
-        )}
-      </div>
-
-      {/* 3. Distribution Curves & Categorical Donut Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Distribution Histogram */}
-        {Object.keys(chart_data.histograms).length > 0 && (
+    <div className="space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {/* 1. Feature Importance & Correlation Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Feature Importance Card */}
           <div className="glass-card p-6">
             <div className="flex items-center space-x-3 mb-4">
               <div className="p-2.5 rounded-xl bg-[#1A73E8]/10 text-[#1A73E8]">
-                <BarChart3 className="w-5 h-5" />
+                <Cpu className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-[#202124]">Distribution Curve ({Object.keys(chart_data.histograms)[0]})</h3>
-                <p className="text-xs text-gray-500">Histogram frequency distribution</p>
+                <h3 className="text-base font-bold text-[#202124]">Business Drivers & Feature Importance</h3>
+                <p className="text-xs text-gray-500">Random Forest importance ranking against target column</p>
               </div>
             </div>
 
-            {(() => {
-              const colName = Object.keys(chart_data.histograms)[0];
-              const hist = chart_data.histograms[colName];
-              const binCenters = hist.bin_edges.slice(0, -1).map((b, idx) => ((b + hist.bin_edges[idx + 1]) / 2).toFixed(2));
-              return (
-                <PlotlyChart
-                  data={[
-                    {
-                      x: binCenters,
-                      y: hist.counts,
-                      type: "bar",
-                      marker: { color: "#1A73E8" },
-                    },
-                  ]}
-                  layout={{
-                    xaxis: { title: colName },
-                    yaxis: { title: "Frequency Count" },
-                    margin: { l: 40, r: 20, t: 20, b: 40 },
-                  }}
-                  className="w-full h-64"
-                />
-              );
-            })()}
+            {hasFeatureImportance ? (
+              <PlotlyChart data={featureImportancePlotData} layout={featureImportanceLayout} className="w-full h-76" />
+            ) : (
+              <EmptyState title="Feature Importance Unavailable" message={featResult.message} />
+            )}
           </div>
-        )}
 
-        {/* Categorical Donut Chart */}
-        {Object.keys(chart_data.donuts).length > 0 && (
+          {/* Correlation Heatmap Card */}
           <div className="glass-card p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="p-2.5 rounded-xl bg-[#EA4335]/10 text-[#EA4335]">
-                <PieChart className="w-5 h-5" />
+              <div className="p-2.5 rounded-xl bg-[#34A853]/10 text-[#34A853]">
+                <Grid className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-[#202124]">Category Breakdown ({Object.keys(chart_data.donuts)[0]})</h3>
-                <p className="text-xs text-gray-500">Top categorical proportions</p>
+                <h3 className="text-base font-bold text-[#202124]">Correlation Matrix Heatmap</h3>
+                <p className="text-xs text-gray-500">Inter-variable Pearson correlation coefficients</p>
               </div>
             </div>
 
-            {(() => {
-              const colName = Object.keys(chart_data.donuts)[0];
-              const donut = chart_data.donuts[colName];
-              return (
-                <PlotlyChart
-                  data={[
-                    {
-                      labels: donut.labels,
-                      values: donut.values,
-                      type: "pie",
-                      hole: 0.4,
-                      marker: {
-                        colors: ["#1A73E8", "#34A853", "#FBBC04", "#EA4335", "#8E24AA", "#00ACC1"],
-                      },
-                    },
-                  ]}
-                  layout={{
-                    margin: { l: 20, r: 20, t: 20, b: 20 },
-                    legend: { orientation: "h", y: -0.1 },
-                  }}
-                  className="w-full h-64"
-                />
-              );
-            })()}
+            {hasCorrelation ? (
+              <PlotlyChart data={corrHeatmapPlotData} layout={corrHeatmapLayout} className="w-full h-76" />
+            ) : (
+              <EmptyState title="Correlation Heatmap Unavailable" message="At least 2 numeric columns are required to generate a correlation heatmap." />
+            )}
           </div>
-        )}
-      </div>
-    </motion.div>
+        </div>
+
+        {/* 2. Time-Series Evaluation Line Chart */}
+        <div className="glass-card p-6 mt-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="p-2.5 rounded-xl bg-[#FBBC04]/15 text-[#b38300]">
+                <TrendingUp className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-[#202124]">Time-Series & Moving Average Trends</h3>
+                <p className="text-xs text-gray-500">Temporal evaluation across Datetime columns</p>
+              </div>
+            </div>
+
+            {hasTimeSeries && (
+              <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                tsResult.trend === "Upward"
+                  ? "bg-[#34A853]/15 text-[#34A853]"
+                  : tsResult.trend === "Downward"
+                  ? "bg-[#EA4335]/15 text-[#EA4335]"
+                  : "bg-gray-100 text-gray-700"
+              }`}>
+                {tsResult.trend} Trend ({tsResult.pct_change > 0 ? `+${tsResult.pct_change}%` : `${tsResult.pct_change}%`})
+              </span>
+            )}
+          </div>
+
+          {hasTimeSeries ? (
+            <PlotlyChart data={timeSeriesPlotData} layout={timeSeriesLayout} className="w-full h-80" />
+          ) : (
+            <EmptyState title="Time-Series Analysis Unavailable" message={tsResult.message} />
+          )}
+        </div>
+
+        {/* 3. Distribution Curves & Categorical Donut Charts */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          {/* Distribution Histogram */}
+          {Object.keys(chart_data.histograms).length > 0 && (
+            <div className="glass-card p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="p-2.5 rounded-xl bg-[#1A73E8]/10 text-[#1A73E8]">
+                  <BarChart3 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#202124]">Distribution Curve ({Object.keys(chart_data.histograms)[0]})</h3>
+                  <p className="text-xs text-gray-500">Histogram frequency distribution</p>
+                </div>
+              </div>
+
+              {(() => {
+                const colName = Object.keys(chart_data.histograms)[0];
+                const hist = chart_data.histograms[colName];
+                const binCenters = hist.bin_edges.slice(0, -1).map((b, idx) => ((b + hist.bin_edges[idx + 1]) / 2).toFixed(2));
+                return (
+                  <PlotlyChart
+                    data={[
+                      {
+                        x: binCenters,
+                        y: hist.counts,
+                        type: "bar",
+                        marker: { color: "#1A73E8" },
+                      },
+                    ]}
+                    layout={{
+                      xaxis: { title: colName },
+                      yaxis: { title: "Frequency Count" },
+                      margin: { l: 40, r: 20, t: 20, b: 40 },
+                    }}
+                    className="w-full h-64"
+                  />
+                );
+              })()}
+            </div>
+          )}
+
+          {/* Categorical Donut Chart */}
+          {Object.keys(chart_data.donuts).length > 0 && (
+            <div className="glass-card p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="p-2.5 rounded-xl bg-[#EA4335]/10 text-[#EA4335]">
+                  <PieChart className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#202124]">Category Breakdown ({Object.keys(chart_data.donuts)[0]})</h3>
+                  <p className="text-xs text-gray-500">Top categorical proportions</p>
+                </div>
+              </div>
+
+              {(() => {
+                const colName = Object.keys(chart_data.donuts)[0];
+                const donut = chart_data.donuts[colName];
+                return (
+                  <PlotlyChart
+                    data={[
+                      {
+                        labels: donut.labels,
+                        values: donut.values,
+                        type: "pie",
+                        hole: 0.4,
+                        marker: {
+                          colors: ["#1A73E8", "#34A853", "#FBBC04", "#EA4335", "#8E24AA", "#00ACC1"],
+                        },
+                      },
+                    ]}
+                    layout={{
+                      margin: { l: 20, r: 20, t: 20, b: 20 },
+                      legend: { orientation: "h", y: -0.1 },
+                    }}
+                    className="w-full h-64"
+                  />
+                );
+              })()}
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </div>
   );
 };
