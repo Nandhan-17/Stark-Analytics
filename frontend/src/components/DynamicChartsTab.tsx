@@ -108,6 +108,8 @@ export const DynamicChartsTab: React.FC<DynamicChartsTabProps> = ({ data }) => {
     legend: { orientation: "h", y: -0.2 },
   };
 
+  const pctChange = tsResult.pct_change ?? 0;
+
   return (
     <div className="space-y-6">
       <motion.div
@@ -177,7 +179,7 @@ export const DynamicChartsTab: React.FC<DynamicChartsTabProps> = ({ data }) => {
                   ? "bg-[#EA4335]/15 text-[#EA4335]"
                   : "bg-gray-100 text-gray-700"
               }`}>
-                {tsResult.trend} Trend ({tsResult.pct_change > 0 ? `+${tsResult.pct_change}%` : `${tsResult.pct_change}%`})
+                {tsResult.trend} Trend ({pctChange > 0 ? `+${pctChange}%` : `${pctChange}%`})
               </span>
             )}
           </div>
