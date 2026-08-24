@@ -12,7 +12,10 @@ import { AnalyticsResponse } from "@/types/analytics";
 import { FileText, Calculator, BrainCircuit, BarChart2, AlertCircle, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const BACKEND_URL = "http://localhost:8000";
+// Localhost நீக்கப்பட்டு Dynamic Environment Variable + Fallback Render URL சேர்க்கப்பட்டுள்ளது
+const BACKEND_URL = (
+  process.env.NEXT_PUBLIC_API_URL || "https://stark-analytics.onrender.com"
+).replace(/\/$/, "");
 
 export default function StarkAnalyticsDashboard() {
   const [apiStatus, setApiStatus] = useState<"checking" | "connected" | "disconnected">("checking");
@@ -219,7 +222,7 @@ export default function StarkAnalyticsDashboard() {
               </AnimatePresence>
             </div>
 
-            {/* Interactive Custom Chart Builder Component (Always Accessible Below Tabs) */}
+            {/* Interactive Custom Chart Builder Component */}
             <div className="pt-8">
               <CustomChartBuilder data={analyticsData} />
             </div>
