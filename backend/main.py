@@ -1,9 +1,9 @@
 import io
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from data_processor import DataProcessingEngine
 import pandas as pd
 import numpy as np
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from data_processor import DataProcessingEngine
 
 app = FastAPI(
     title="Stark Analytics Engine",
@@ -11,28 +11,47 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Enable CORS for local Next.js / Vite development
+# 1. CORS Configuration (Allows Vercel Frontend & Localhost for Testing)
+origins = [
+    "https://stark-analytics-eta.vercel.app",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Production-ல் அனைத்து frontend domains-ஐயும் அனுமதிக்கும்
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
+# 2. Base Routes
 @app.get("/")
 def root():
-    return {"message": "Stark Analytics API Engine is Running", "version": "1.0.0"}
+    return {
+        "message": "Stark Analytics API Engine is Running Successfully",
+        "version": "1.0.0",
+        "status": "online"
+    }
 
 @app.get("/api/health")
 def health_check():
-    return {"status": "healthy", "service": "Stark Analytics Engine"}
+    return {
+        "status": "healthy",
+        "service": "Stark Analytics Engine"
+    }
 
+# 3. Dynamic CSV Upload Endpoint
 @app.post("/api/upload-csv")
 async def upload_csv(file: UploadFile = File(...)):
     """Accept and process user uploaded CSV file dynamically."""
-    if not file.filename.endswith(".csv") and not file.content_type in ["text/csv", "application/vnd.ms-excel"]:
-        raise HTTPException(status_code=400, detail="File must be a valid .csv format.")
+    if not file.filename.endswith(".csv") and file.content_type not in ["text/csv", "application/vnd.ms-excel"]:
+        raise HTTPException(
+            status_code=400, 
+            detail="File must be a valid .csv format."
+        )
     
     try:
         contents = await file.read()
@@ -40,8 +59,12 @@ async def upload_csv(file: UploadFile = File(...)):
         results = engine.process_all()
         return results
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Data processing error: {str(e)}")
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Data processing error: {str(e)}"
+        )
 
+# 4. Sample Datasets Generator Endpoint
 @app.get("/api/sample-dataset/{dataset_type}")
 def get_sample_dataset(dataset_type: str):
     """Generate and process a rich sample dataset dynamically."""
@@ -53,7 +76,7 @@ def get_sample_dataset(dataset_type: str):
         categories = np.random.choice(["Electronics", "Clothing", "Home & Kitchen", "Books", "Beauty"], n_rows)
         sales = np.random.normal(loc=250, scale=80, size=n_rows).round(2)
         sales[sales < 10] = 15.0
-        # Add intentional anomalies
+        # Intentional anomalies
         sales[12] = 1850.0
         sales[88] = 2200.0
         quantity = np.random.randint(1, 10, size=n_rows)
@@ -94,7 +117,7 @@ def get_sample_dataset(dataset_type: str):
         })
         filename = "Healthcare_Patient_Metrics.csv"
 
-    else:  # hr analytics default
+    else:  # HR Analytics Default
         department = np.random.choice(["Engineering", "Sales", "Marketing", "HR", "Finance"], n_rows)
         experience_years = np.random.randint(1, 20, size=n_rows)
         salary = (45000 + experience_years * 3800 + np.random.normal(0, 5000, n_rows)).round(0)
