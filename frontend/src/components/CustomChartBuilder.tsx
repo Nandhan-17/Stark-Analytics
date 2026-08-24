@@ -88,119 +88,120 @@ export const CustomChartBuilder: React.FC<CustomChartBuilderProps> = ({ data }) 
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="glass-card p-6 border-2 border-[#1A73E8]/20 bg-gradient-to-b from-white to-blue-50/20 shadow-md"
-    >
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="p-2.5 rounded-xl bg-[#1A73E8] text-white shadow-sm">
-          <Sliders className="w-5 h-5" />
-        </div>
-        <div>
-          <h3 className="text-base font-bold text-[#202124]">Interactive Custom Chart Builder</h3>
-          <p className="text-xs text-gray-500">Dynamically configure axes, group-by categories, and chart types on the fly</p>
-        </div>
-      </div>
-
-      {/* Control Panel Dropdowns Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-xl bg-white/90 border border-gray-200/80 shadow-2xs mb-6">
-        {/* Dropdown 1: X-Axis */}
-        <div>
-          <label className="block text-xs font-bold text-gray-600 mb-1">X-Axis Column</label>
-          <select
-            value={xAxis}
-            onChange={(e) => setXAxis(e.target.value)}
-            className="w-full text-xs font-medium py-2 px-3 rounded-lg bg-gray-50 border border-gray-200 text-[#202124] focus:outline-none focus:border-[#1A73E8]"
-          >
-            {allColumns.map((col) => (
-              <option key={col} value={col}>
-                {col}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Dropdown 2: Y-Axis */}
-        <div>
-          <label className="block text-xs font-bold text-gray-600 mb-1">Y-Axis Column (Optional)</label>
-          <select
-            value={yAxis}
-            onChange={(e) => setYAxis(e.target.value)}
-            className="w-full text-xs font-medium py-2 px-3 rounded-lg bg-gray-50 border border-gray-200 text-[#202124] focus:outline-none focus:border-[#1A73E8]"
-          >
-            <option value="">None (Count Frequency)</option>
-            {metadata.numeric_cols.map((col) => (
-              <option key={col} value={col}>
-                {col}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Dropdown 3: Group By / Color */}
-        <div>
-          <label className="block text-xs font-bold text-gray-600 mb-1">Color / Group-by</label>
-          <select
-            value={groupBy}
-            onChange={(e) => setGroupBy(e.target.value)}
-            className="w-full text-xs font-medium py-2 px-3 rounded-lg bg-gray-50 border border-gray-200 text-[#202124] focus:outline-none focus:border-[#1A73E8]"
-          >
-            <option value="None">None</option>
-            {metadata.categorical_cols.map((col) => (
-              <option key={col} value={col}>
-                {col}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Dropdown 4: Chart Type Selector */}
-        <div>
-          <label className="block text-xs font-bold text-gray-600 mb-1">Chart Type</label>
-          <div className="flex items-center space-x-1 bg-gray-50 p-1 rounded-lg border border-gray-200">
-            <button
-              onClick={() => setChartType("bar")}
-              title="Bar Chart"
-              className={`p-1.5 rounded-md transition-colors ${chartType === "bar" ? "bg-[#1A73E8] text-white" : "text-gray-500 hover:text-gray-900"}`}
-            >
-              <BarChart className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setChartType("line")}
-              title="Line Chart"
-              className={`p-1.5 rounded-md transition-colors ${chartType === "line" ? "bg-[#1A73E8] text-white" : "text-gray-500 hover:text-gray-900"}`}
-            >
-              <LineChart className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setChartType("scatter")}
-              title="Scatter Plot"
-              className={`p-1.5 rounded-md transition-colors ${chartType === "scatter" ? "bg-[#1A73E8] text-white" : "text-gray-500 hover:text-gray-900"}`}
-            >
-              <ScatterChart className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setChartType("pie")}
-              title="Pie / Donut Chart"
-              className={`p-1.5 rounded-md transition-colors ${chartType === "pie" ? "bg-[#1A73E8] text-white" : "text-gray-500 hover:text-gray-900"}`}
-            >
-              <PieChart className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setChartType("box")}
-              title="Box Plot"
-              className={`p-1.5 rounded-md transition-colors ${chartType === "box" ? "bg-[#1A73E8] text-white" : "text-gray-500 hover:text-gray-900"}`}
-            >
-              <BoxSelect className="w-4 h-4" />
-            </button>
+    <div className="glass-card p-6 border-2 border-[#1A73E8]/20 bg-gradient-to-b from-white to-blue-50/20 shadow-md">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="flex items-center space-x-3 mb-6">
+          <div className="p-2.5 rounded-xl bg-[#1A73E8] text-white shadow-sm">
+            <Sliders className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-[#202124]">Interactive Custom Chart Builder</h3>
+            <p className="text-xs text-gray-500">Dynamically configure axes, group-by categories, and chart types on the fly</p>
           </div>
         </div>
-      </div>
 
-      {/* Render Custom Plotly Graph */}
-      <PlotlyChart data={generateCustomPlotData()} layout={customPlotLayout} className="w-full h-88" />
-    </motion.div>
+        {/* Control Panel Dropdowns Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 rounded-xl bg-white/90 border border-gray-200/80 shadow-2xs mb-6">
+          {/* Dropdown 1: X-Axis */}
+          <div>
+            <label className="block text-xs font-bold text-gray-600 mb-1">X-Axis Column</label>
+            <select
+              value={xAxis}
+              onChange={(e) => setXAxis(e.target.value)}
+              className="w-full text-xs font-medium py-2 px-3 rounded-lg bg-gray-50 border border-gray-200 text-[#202124] focus:outline-none focus:border-[#1A73E8]"
+            >
+              {allColumns.map((col) => (
+                <option key={col} value={col}>
+                  {col}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Dropdown 2: Y-Axis */}
+          <div>
+            <label className="block text-xs font-bold text-gray-600 mb-1">Y-Axis Column (Optional)</label>
+            <select
+              value={yAxis}
+              onChange={(e) => setYAxis(e.target.value)}
+              className="w-full text-xs font-medium py-2 px-3 rounded-lg bg-gray-50 border border-gray-200 text-[#202124] focus:outline-none focus:border-[#1A73E8]"
+            >
+              <option value="">None (Count Frequency)</option>
+              {metadata.numeric_cols.map((col) => (
+                <option key={col} value={col}>
+                  {col}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Dropdown 3: Group By / Color */}
+          <div>
+            <label className="block text-xs font-bold text-gray-600 mb-1">Color / Group-by</label>
+            <select
+              value={groupBy}
+              onChange={(e) => setGroupBy(e.target.value)}
+              className="w-full text-xs font-medium py-2 px-3 rounded-lg bg-gray-50 border border-gray-200 text-[#202124] focus:outline-none focus:border-[#1A73E8]"
+            >
+              <option value="None">None</option>
+              {metadata.categorical_cols.map((col) => (
+                <option key={col} value={col}>
+                  {col}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Dropdown 4: Chart Type Selector */}
+          <div>
+            <label className="block text-xs font-bold text-gray-600 mb-1">Chart Type</label>
+            <div className="flex items-center space-x-1 bg-gray-50 p-1 rounded-lg border border-gray-200">
+              <button
+                onClick={() => setChartType("bar")}
+                title="Bar Chart"
+                className={`p-1.5 rounded-md transition-colors ${chartType === "bar" ? "bg-[#1A73E8] text-white" : "text-gray-500 hover:text-gray-900"}`}
+              >
+                <BarChart className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setChartType("line")}
+                title="Line Chart"
+                className={`p-1.5 rounded-md transition-colors ${chartType === "line" ? "bg-[#1A73E8] text-white" : "text-gray-500 hover:text-gray-900"}`}
+              >
+                <LineChart className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setChartType("scatter")}
+                title="Scatter Plot"
+                className={`p-1.5 rounded-md transition-colors ${chartType === "scatter" ? "bg-[#1A73E8] text-white" : "text-gray-500 hover:text-gray-900"}`}
+              >
+                <ScatterChart className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setChartType("pie")}
+                title="Pie / Donut Chart"
+                className={`p-1.5 rounded-md transition-colors ${chartType === "pie" ? "bg-[#1A73E8] text-white" : "text-gray-500 hover:text-gray-900"}`}
+              >
+                <PieChart className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setChartType("box")}
+                title="Box Plot"
+                className={`p-1.5 rounded-md transition-colors ${chartType === "box" ? "bg-[#1A73E8] text-white" : "text-gray-500 hover:text-gray-900"}`}
+              >
+                <BoxSelect className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Render Custom Plotly Graph */}
+        <PlotlyChart data={generateCustomPlotData()} layout={customPlotLayout} className="w-full h-88" />
+      </motion.div>
+    </div>
   );
 };
