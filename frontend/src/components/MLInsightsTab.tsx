@@ -75,94 +75,95 @@ export const MLInsightsTab: React.FC<MLInsightsTabProps> = ({ data }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="space-y-6"
-    >
-      {/* 1. Isolation Forest Anomaly Detection Section */}
-      <div className="glass-card p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-[#EA4335]/10 text-[#EA4335]">
-              <ShieldAlert className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-[#202124]">Multivariate Anomaly Detection (Isolation Forest)</h3>
-              <p className="text-xs text-gray-500">Unsupervised outlier score evaluation across numeric dimensions</p>
-            </div>
-          </div>
-
-          {anomalies.available && (
+    <div className="space-y-6">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {/* 1. Isolation Forest Anomaly Detection Section */}
+        <div className="glass-card p-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div className="flex items-center space-x-3">
-              <div className="px-3 py-1.5 rounded-xl bg-[#EA4335]/10 border border-[#EA4335]/20 text-xs font-bold text-[#EA4335]">
-                {anomalies.anomaly_count} Anomalies ({anomalies.anomaly_pct}%)
+              <div className="p-2.5 rounded-xl bg-[#EA4335]/10 text-[#EA4335]">
+                <ShieldAlert className="w-5 h-5" />
               </div>
-              <div className="px-3 py-1.5 rounded-xl bg-[#1A73E8]/10 border border-[#1A73E8]/20 text-xs font-bold text-[#1A73E8]">
-                {anomalies.normal_count} Normal Records
+              <div>
+                <h3 className="text-base font-bold text-[#202124]">Multivariate Anomaly Detection (Isolation Forest)</h3>
+                <p className="text-xs text-gray-500">Unsupervised outlier score evaluation across numeric dimensions</p>
               </div>
             </div>
-          )}
-        </div>
 
-        {anomalies.available ? (
-          <PlotlyChart data={anomalyPlotData} layout={anomalyPlotLayout} className="w-full h-88" />
-        ) : (
-          <EmptyState title="Anomaly Detection Unavailable" message={anomalies.message} />
-        )}
-      </div>
-
-      {/* 2. K-Means Customer & Data Segmentation Section */}
-      <div className="glass-card p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 rounded-xl bg-[#1A73E8]/10 text-[#1A73E8]">
-              <Users className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-[#202124]">Dynamic Customer & Data Segmentation (K-Means)</h3>
-              <p className="text-xs text-gray-500">Automated clustering based on feature variance patterns</p>
-            </div>
-          </div>
-
-          {segmentation.available && (
-            <div className="text-xs font-bold px-3 py-1.5 rounded-xl bg-gray-100 text-[#202124]">
-              {segmentation.k_clusters} Dynamic Clusters Evaluated
-            </div>
-          )}
-        </div>
-
-        {segmentation.available ? (
-          <div className="space-y-6">
-            <PlotlyChart data={clusterTraces} layout={clusterPlotLayout} className="w-full h-88" />
-
-            {/* Cluster Summaries Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-2">
-              {(segmentation.clusters || []).map((cluster, idx) => (
-                <div
-                  key={idx}
-                  className="p-4 rounded-xl border border-gray-200/80 bg-white/90 shadow-2xs hover:shadow-sm transition-shadow"
-                >
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: clusterColors[idx % clusterColors.length] }}
-                    ></span>
-                    <span className="text-xs font-bold text-[#202124]">{cluster.name}</span>
-                  </div>
-                  <div className="text-xl font-extrabold text-[#202124]">
-                    {cluster.size.toLocaleString()} <span className="text-xs text-gray-500 font-normal">records</span>
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1 font-medium">{cluster.percentage}% of dataset</div>
+            {anomalies.available && (
+              <div className="flex items-center space-x-3">
+                <div className="px-3 py-1.5 rounded-xl bg-[#EA4335]/10 border border-[#EA4335]/20 text-xs font-bold text-[#EA4335]">
+                  {anomalies.anomaly_count} Anomalies ({anomalies.anomaly_pct}%)
                 </div>
-              ))}
-            </div>
+                <div className="px-3 py-1.5 rounded-xl bg-[#1A73E8]/10 border border-[#1A73E8]/20 text-xs font-bold text-[#1A73E8]">
+                  {anomalies.normal_count} Normal Records
+                </div>
+              </div>
+            )}
           </div>
-        ) : (
-          <EmptyState title="Segmentation Unavailable" message={segmentation.message} />
-        )}
-      </div>
-    </motion.div>
+
+          {anomalies.available ? (
+            <PlotlyChart data={anomalyPlotData} layout={anomalyPlotLayout} className="w-full h-88" />
+          ) : (
+            <EmptyState title="Anomaly Detection Unavailable" message={anomalies.message} />
+          )}
+        </div>
+
+        {/* 2. K-Means Customer & Data Segmentation Section */}
+        <div className="glass-card p-6 mt-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="p-2.5 rounded-xl bg-[#1A73E8]/10 text-[#1A73E8]">
+                <Users className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-[#202124]">Dynamic Customer & Data Segmentation (K-Means)</h3>
+                <p className="text-xs text-gray-500">Automated clustering based on feature variance patterns</p>
+              </div>
+            </div>
+
+            {segmentation.available && (
+              <div className="text-xs font-bold px-3 py-1.5 rounded-xl bg-gray-100 text-[#202124]">
+                {segmentation.k_clusters} Dynamic Clusters Evaluated
+              </div>
+            )}
+          </div>
+
+          {segmentation.available ? (
+            <div className="space-y-6">
+              <PlotlyChart data={clusterTraces} layout={clusterPlotLayout} className="w-full h-88" />
+
+              {/* Cluster Summaries Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-2">
+                {(segmentation.clusters || []).map((cluster, idx) => (
+                  <div
+                    key={idx}
+                    className="p-4 rounded-xl border border-gray-200/80 bg-white/90 shadow-2xs hover:shadow-sm transition-shadow"
+                  >
+                    <div className="flex items-center space-x-2 mb-2">
+                      <span
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: clusterColors[idx % clusterColors.length] }}
+                      ></span>
+                      <span className="text-xs font-bold text-[#202124]">{cluster.name}</span>
+                    </div>
+                    <div className="text-xl font-extrabold text-[#202124]">
+                      {cluster.size.toLocaleString()} <span className="text-xs text-gray-500 font-normal">records</span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1 font-medium">{cluster.percentage}% of dataset</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <EmptyState title="Segmentation Unavailable" message={segmentation.message} />
+          )}
+        </div>
+      </motion.div>
+    </div>
   );
 };
