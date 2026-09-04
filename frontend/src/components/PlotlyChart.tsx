@@ -40,18 +40,26 @@ export const PlotlyChart: React.FC<PlotlyChartProps> = ({
     );
   }
 
+  // பாப்அப் பாக்ஸ் மற்றும் எழுத்துக்கள் பளிச்சென்று தெரிய டார்க் பின்னணி + வெள்ளை டெக்ஸ்ட்
+  const resolvedHoverLabel = {
+    bgcolor: "#0F172A",      // டார்க் நேவி / ஸ்லேட் பின்னணி
+    bordercolor: "#334155",  // தெளிவான பார்டர்
+    font: {
+      family: "Inter, sans-serif",
+      size: 12,
+      color: "#FFFFFF",      // தூய வெள்ளை நிற எழுத்துக்கள்
+    },
+    ...layout?.hoverlabel,
+  };
+
   const defaultLayout = {
     autosize: true,
     font: { family: "Inter, sans-serif", color: "#202124", size: 12 },
     paper_bgcolor: "transparent",
     plot_bgcolor: "transparent",
     margin: { l: 40, r: 20, t: 30, b: 40 },
-    hoverlabel: {
-      bgcolor: "#FFFFFF",
-      font: { family: "Inter, sans-serif", size: 12 },
-      bordercolor: "#E2E8F0",
-    },
     ...layout,
+    hoverlabel: resolvedHoverLabel,
   };
 
   return (
